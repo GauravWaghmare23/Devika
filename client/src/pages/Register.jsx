@@ -1,14 +1,43 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
+import axiosInstance from '../config/axios';
+import { UserContext } from '../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
+
+  function submitHandler(e) {
+    e.preventDefault();
+    setError("");
+
+    if (!email || !password) {
+      setError("Please fill all the fields");
+      return;
+    }
+
+    axiosInstance.post("/users/register", { email, password })
+      .then((res) => {
+        localStorage.setItem("token", res.data.token);
+        setUser(res.data.data);
+        navigate("/");
+      })
+      .catch((err) => {
+        const message = err?.response?.data?.message || "Registration failed";
+        setError(message);
+      });
+  }
+
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden px-4">
       {/* Ultra Dark Grid Background */}
       <div className="absolute inset-0">
-        {/* deep radial */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(8,8,8,0.95),#000_75%)]" />
 
-        {/* neon grid */}
         <div
           className="absolute inset-0 opacity-20"
           style={{
@@ -18,7 +47,6 @@ const Register = () => {
           }}
         />
 
-        {/* secondary faint grid for depth */}
         <div
           className="absolute inset-0 opacity-10"
           style={{
@@ -28,13 +56,13 @@ const Register = () => {
           }}
         />
 
-        {/* glow accents */}
         <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-indigo-900/20 blur-[200px] rounded-full" />
         <div className="absolute bottom-0 right-0 w-[450px] h-[450px] bg-purple-900/20 blur-[180px] rounded-full" />
       </div>
 
       {/* Register Card */}
       <div className="relative w-full max-w-md bg-black/80 backdrop-blur-3xl border border-white/10 rounded-2xl shadow-[0_0_60px_rgba(0,0,0,1)] p-8">
+
         {/* Branding */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold tracking-wide bg-gradient-to-r from-gray-200 to-white bg-clip-text text-transparent">
@@ -49,8 +77,15 @@ const Register = () => {
           <p className="text-gray-500 text-sm mt-1">Join and start building</p>
         </div>
 
+        {/* Error UI */}
+        {error && (
+          <div className="mb-4 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm text-red-400">
+            {error}
+          </div>
+        )}
+
         {/* Form */}
-        <form className="space-y-5">
+        <form onSubmit={submitHandler} className="space-y-5">
           <div>
             <label className="block text-sm text-gray-400 mb-1" htmlFor="email">
               Email
@@ -59,6 +94,8 @@ const Register = () => {
               type="email"
               id="email"
               name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="Enter your email"
               className="w-full px-4 py-2.5 rounded-lg bg-black border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 focus:shadow-[0_0_12px_rgba(200,200,200,0.4)] transition"
@@ -73,6 +110,8 @@ const Register = () => {
               type="password"
               id="password"
               name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="Create a password"
               className="w-full px-4 py-2.5 rounded-lg bg-black border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 focus:shadow-[0_0_12px_rgba(200,200,200,0.4)] transition"
