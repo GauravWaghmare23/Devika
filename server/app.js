@@ -7,8 +7,9 @@ import cors from "cors";
 const app = express();
 
 app.use(cors({
-    
-}))
+    origin: 'https://devika-1-jxbb.onrender.com',
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
