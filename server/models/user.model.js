@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    unique: true,
     required: true,
     trim: true,
     lowercase: true,
@@ -26,16 +25,17 @@ const userSchema = new mongoose.Schema({
 userSchema.index({email: 1}, {unique: true});
 
 userSchema.statics.hashPassword = async function (password) {
-  return await bcrypt.hash(password, 10);
+    return await bcrypt.hash(password, 10);
 };
 
 userSchema.methods.isPasswordValid = async function (password) {
-  return await bcrypt.compare(password, this.password);
+    return await bcrypt.compare(password, this.password);
 };
 
 userSchema.methods.generateJWT = function () {
   return jwt.sign(
     {
+      id: this._id,
       email: this.email,
     },
     process.env.JWT_SECRET,
