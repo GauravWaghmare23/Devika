@@ -6,8 +6,13 @@ import cors from "cors";
 
 const app = express();
 
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://devika-1-jxbb.onrender.com'
+];
+
 app.use(cors({
-    origin: 'https://devika-1-jxbb.onrender.com',
+    origin: allowedOrigins,
     credentials: true
 }));
 app.use(express.json());
