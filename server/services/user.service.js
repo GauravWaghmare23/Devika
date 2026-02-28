@@ -42,3 +42,9 @@ export const loginUserService = async({email, password})=>{
 
     return existingUser;
 }
+
+
+export const getAllUsersService = async ({userId}) => {
+  const users = await UserModel.find({ _id: { $ne: userId } }).select("-password");
+  return users;
+}

@@ -17,4 +17,8 @@ router.post("/login",
 
 router.get("/profile", authenticateJWT, userController.getUserProfile);
 
+router.get("/logout", authenticateJWT, userController.logoutUser);
+
+router.get("/all", authenticateJWT, userController.getAllUsers);
+
 export default router;

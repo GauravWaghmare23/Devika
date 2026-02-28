@@ -1,5 +1,6 @@
 import {validationResult} from "express-validator";
-import { createUserService, loginUserService } from './../services/user.service.js';
+import { createUserService, getAllUsersService, loginUserService } from './../services/user.service.js';
+import redisClient from "../services/redis.service.js";
 
 export const registerUser = async (req, res) => {
 
@@ -18,6 +19,11 @@ export const registerUser = async (req, res) => {
         const {email, password} = req.body;
 
         const user = await createUserService({email, password});
+
+        const keys = await redisClient.keys(`users:all:*`);
+        if (keys.length > 0) {
+            await redisClient.del(keys);
+        }
 
         const token = user.generateJWT();
         
@@ -132,4 +138,52 @@ export const getUserProfile = async (req,res) => {
             error: error.message,
         });
     };
+}
+
+export const logoutUser = (req,res) => {
+    try {
+        res.clearCookie("token");
+        return res.status(200).json({
+            success: true,
+            message: "Logout successful"
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message,
+        });
+    }
+}
+
+export const getAllUsers = async (req,res) => {
+    try {
+
+        const cacheKey = `users:all:${req.user.id}`;
+
+        const cachedUsers = await redisClient.get(cacheKey);
+
+        if (cachedUsers) {
+            return res.status(200).json({
+                success: true,
+                message: "Users fetched from cache",
+                data: JSON.parse(cachedUsers)
+            });
+        }
+        const users = await getAllUsersService({userId: req.user.id});
+
+        await redisClient.set(cacheKey, JSON.stringify(users)); 
+
+        return res.status(200).json({
+            success: true,
+            message: "Users fetched successfully",
+            data: users
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message,
+        });
+    }
 }
