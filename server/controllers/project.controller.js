@@ -19,10 +19,20 @@ export const createProject = async(req, res) => {
 
         const newProject = await createProjectService({name, userId});
 
+        if (!newProject) {
+            return res.status(400).json({
+                success: false,
+                message: "Failed to create project",
+                error: "Failed to create project"
+            });
+        }
+
+        const project = await newProject.populate("users", "email");
+
         return res.status(201).json({
             success: true,
             message: "Project created successfully",
-            data: newProject
+            data: project
         });
 
     } catch (error) {
