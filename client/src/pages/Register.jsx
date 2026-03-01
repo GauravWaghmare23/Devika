@@ -1,13 +1,13 @@
-import React, { useContext, useState } from 'react';
-import axiosInstance from '../config/axios';
-import { UserContext } from '../context/UserContext';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useState } from "react";
+import axiosInstance from "../config/axios";
+import { UserContext } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { setUser } = useContext(UserContext);
 
@@ -20,7 +20,10 @@ const Register = () => {
       return;
     }
 
-    axiosInstance.post("/users/register", { email, password })
+    setLoading(true);
+
+    axiosInstance
+      .post("/users/register", { email, password })
       .then((res) => {
         localStorage.setItem("token", res.data.token);
         setUser(res.data.data);
@@ -29,6 +32,9 @@ const Register = () => {
       .catch((err) => {
         const message = err?.response?.data?.error || "Registration failed";
         setError(message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
@@ -42,8 +48,8 @@ const Register = () => {
           className="absolute inset-0 opacity-20"
           style={{
             backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.25) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(255,255,255,0.25) 1.5px, transparent 1.5px)',
-            backgroundSize: '40px 40px',
+              "linear-gradient(rgba(255,255,255,0.25) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(255,255,255,0.25) 1.5px, transparent 1.5px)",
+            backgroundSize: "40px 40px",
           }}
         />
 
@@ -51,8 +57,8 @@ const Register = () => {
           className="absolute inset-0 opacity-10"
           style={{
             backgroundImage:
-              'linear-gradient(rgba(120,120,120,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(120,120,120,0.12) 1px, transparent 1px)',
-            backgroundSize: '90px 90px',
+              "linear-gradient(rgba(120,120,120,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(120,120,120,0.12) 1px, transparent 1px)",
+            backgroundSize: "90px 90px",
           }}
         />
 
@@ -62,13 +68,20 @@ const Register = () => {
 
       {/* Register Card */}
       <div className="relative w-full max-w-md bg-black/80 backdrop-blur-3xl border border-white/10 rounded-2xl shadow-[0_0_60px_rgba(0,0,0,1)] p-8">
+        {loading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 rounded-2xl">
+            <div className="animate-spin h-7 w-7 border-2 border-white border-t-transparent rounded-full"></div>
+          </div>
+        )}
 
         {/* Branding */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold tracking-wide bg-linear-to-r from-gray-200 to-white bg-clip-text text-transparent">
             DEVIKA
           </h1>
-          <p className="text-gray-500 mt-2 text-sm">Create your developer account</p>
+          <p className="text-gray-500 mt-2 text-sm">
+            Create your developer account
+          </p>
         </div>
 
         {/* Heading */}
@@ -103,7 +116,10 @@ const Register = () => {
           </div>
 
           <div>
-            <label className="block text-sm text-gray-400 mb-1" htmlFor="password">
+            <label
+              className="block text-sm text-gray-400 mb-1"
+              htmlFor="password"
+            >
               Password
             </label>
             <input
@@ -122,14 +138,14 @@ const Register = () => {
             type="submit"
             className="w-full py-2.5 rounded-lg bg-linear-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white font-semibold transition duration-200 shadow-[0_0_20px_rgba(255,255,255,0.15)]"
           >
-            Create account
+            Login
           </button>
         </form>
 
         {/* Footer */}
         <div className="mt-6 text-center">
           <p className="text-gray-500 text-sm">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <a
               href="/login"
               className="text-gray-300 hover:text-white font-medium"

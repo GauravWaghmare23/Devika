@@ -4,9 +4,8 @@ import { UserContext } from "./UserContext";
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useContext(UserContext);
-  const token = localStorage.getItem("token");
 
-  if (!user && !token) {
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 
