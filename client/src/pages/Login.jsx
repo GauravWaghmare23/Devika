@@ -49,8 +49,8 @@ const Login = () => {
                     }}
                 />
 
-                <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-white/5 blur-[200px] rounded-full" />
-                <div className="absolute bottom-0 right-0 w-[450px] h-[450px] bg-indigo-900/20 blur-[180px] rounded-full" />
+                <div className="absolute -top-40 -left-40 w-125 h-125 bg-white/5 blur-[200px] rounded-full" />
+                <div className="absolute bottom-0 right-0 w-112.5 h-112.5 bg-indigo-900/20 blur-[180px] rounded-full" />
             </div>
 
             {/* Login Card */}
@@ -58,7 +58,7 @@ const Login = () => {
 
                 {/* Branding */}
                 <div className="mb-8 text-center">
-                    <h1 className="text-3xl font-bold tracking-wide bg-gradient-to-r from-gray-200 to-white bg-clip-text text-transparent">
+                    <h1 className="text-3xl font-bold tracking-wide bg-linear-to-r from-gray-200 to-white bg-clip-text text-transparent">
                         DEVIKA
                     </h1>
                     <p className="text-gray-500 mt-2 text-sm">Developer focused coding platform</p>
@@ -113,7 +113,7 @@ const Login = () => {
 
                     <button
                         type="submit"
-                        className="w-full py-2.5 rounded-lg bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white font-semibold transition duration-200 shadow-[0_0_20px_rgba(255,255,255,0.15)]"
+                        className="w-full py-2.5 rounded-lg bg-linear-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 text-white font-semibold transition duration-200 shadow-[0_0_20px_rgba(255,255,255,0.15)]"
                     >
                         Login
                     </button>
